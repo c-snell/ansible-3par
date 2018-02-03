@@ -1,0 +1,56 @@
+---
+- name: Connect to 3par
+  hosts: localhost
+  become: no
+  environment:
+    no_proxy: localhost, 10.10.1.150, 10.10.1.151
+
+  vars:
+    auth_3par_user: "3paradm"
+    auth_3par_password: "3pardata"
+    ip_address_3par: 10.10.1.150
+    rest_api_url_3par: "https://{{ ip_address_3par }}:8080/api/v1"
+
+  tasks:
+    - name: check if 3par WSAPI is running
+      uri:
+        url: "{{ rest_api_url_3par }}/credentials"
+#        force_basic_auth: yes
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body: "{ 'user': '{{ auth_3par_user }}', 'password': '{{ auth_3par_password }}' }"
+        status_code: 201
+        return_content: yes
+        validate_certs: no
+      register: output
+
+    - name: Parsing key
+      debug:
+        msg: "{{ output.json.key }}"
+
+
+#    - name: test sessionkey with curl
+#      command: "curl -k -H 'X-HP3PAR-WSAPI-SessionKey: {{ output.json.key }}' {{ rest_api_url_3par }}/volumes" 
+#      command: "curl -k {{ rest_api_url_3par }}/volumes" 
+#      register: curl_volumes
+
+
+
+    - name: GET 3par hosts
+      uri:
+        url: "{{ rest_api_url_3par }}/hosts"
+        method: GET
+        headers:
+          Content-Type: "application/json"
+          X-HP3PAR-WSAPI-SessionKey: "{{ output.json.key }}"
+          Accept: "application/json"
+        status_code: 200
+        return_content: yes
+        validate_certs: no
+      register: volume_output
+
+    - name: Parsing Volumes GET
+      debug: 
+        msg: "{{ volume_output }}"

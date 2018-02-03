@@ -1,0 +1,80 @@
+---
+- name: Export volumeset to host
+  hosts: localhost
+  become: no
+  environment:
+    no_proxy: localhost, 10.10.1.150, 10.10.1.151
+
+  vars:
+    rest_api_url_3par: "https://{{ ip_address_3par }}:8080/api/v1"
+
+  vars_prompt:
+    - name: "auth_3par_user"
+      prompt: "Enter 3par admin user"
+      private: no
+      default: "3paradm"
+
+    - name: "auth_3par_password"
+      prompt: "Enter password"
+      private: yes
+      default: "3pardata"
+
+    - name: "ip_address_3par"
+      prompt: "3PAR Storage System IP address"
+      private: no
+      default: "10.10.1.150"
+
+    - name: "volset_name"
+      prompt: "Enter volume to export"  
+      private: no
+      default: "ansi_vol"
+
+    - name: "host_name"
+      prompt: "Enter host name"
+      private: no
+      default: "ansi_temp"
+
+    - name: "lun_id"
+      prompt: "Enter LUN ID"
+      private: no
+      default: "34"
+
+
+  tasks:
+    - name: check if 3par WSAPI is running
+      uri:
+        url: "{{ rest_api_url_3par }}/credentials"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body: "{ 'user': '{{ auth_3par_user }}', 'password': '{{ auth_3par_password }}' }"
+        status_code: 201
+        return_content: yes
+        validate_certs: no
+      register: output
+
+    - name: Parsing key
+      debug:
+        msg: "{{ output.json.key }}"
+
+    - name: Export volumeset to host
+      uri:
+        url: "{{ rest_api_url_3par }}/vluns"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          X-HP3PAR-WSAPI-SessionKey: "{{ output.json.key }}"
+          Accept: "application/json"
+        body_format: json
+        body: "{ 'volumeName':'set:{{ volset_name }}','hostname': '{{ host_name }}','lun': {{ lun_id }} }"
+        status_code: 201
+        return_content: yes
+        validate_certs: no
+      register: vlun_output
+
+    - name: Parsing VLUN Status
+      debug:
+        msg: "{{ vlun_output }}"
+
+

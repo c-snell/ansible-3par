@@ -1,0 +1,73 @@
+---
+- name: Create 3par Hostset
+  hosts: localhost
+  become: no
+  environment:
+    no_proxy: localhost, 10.10.1.150, 10.10.1.151
+
+  vars:
+    rest_api_url_3par: "https://{{ ip_address_3par }}:8080/api/v1"
+
+  vars_prompt:
+    - name: "auth_3par_user"
+      prompt: "Enter 3par admin user"
+      private: no
+      default: "3paradm"
+
+    - name: "auth_3par_password"
+      prompt: "Enter password"
+      private: yes
+      default: "3pardata"
+
+    - name: "ip_address_3par"
+      prompt: "3PAR Storage System IP address"
+      private: no
+      default: "10.10.1.150"
+
+    - name: "volumeset_name"
+      prompt: "Enter new volumeset name"
+      private: no
+      default: "newVolumeSet"
+
+    - name: "set_members"
+      prompt: "Hosts to add to hostset"
+      private: no
+      default: '"ansi_vol","new_vol_ansible"'  
+
+  tasks:
+    - name: check if 3par WSAPI is running
+      uri:
+        url: "{{ rest_api_url_3par }}/credentials"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+        body_format: json
+        body: "{ 'user': '{{ auth_3par_user }}', 'password': '{{ auth_3par_password }}' }"
+        status_code: 201
+        return_content: yes
+        validate_certs: no
+      register: output
+
+    - name: Parsing key
+      debug:
+        msg: "{{ output.json.key }}"
+
+    - name: Create 3par Hostset
+      uri:
+        url: "{{ rest_api_url_3par }}/volumesets/"
+        method: POST
+        headers:
+          Content-Type: "application/json"
+          X-HP3PAR-WSAPI-SessionKey: "{{ output.json.key }}"
+          Accept: "application/json"
+        body_format: json
+        body: "{ 'name':'{{ volumeset_name }}','setmembers':[{{ set_members }}] }"
+        status_code: 201
+        return_content: yes
+        validate_certs: no
+      register: volumeset_output
+
+    - name: Parsing volumeset status
+      debug:
+        msg: "{{ volumeset_output }}"
+
