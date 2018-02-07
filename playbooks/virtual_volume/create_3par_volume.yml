@@ -3,6 +3,7 @@
   hosts: localhost
   become: no
   environment:
+    #comment out no_proxy if not behind proxy
     no_proxy: localhost, 10.10.1.150, 10.10.1.151
 
   vars:
@@ -25,7 +26,7 @@
       default: "10.10.1.150"
 
     - name: "vol_name"
-      prompt: "Enter new volume name"  
+      prompt: "Enter new volume name"
       private: no
 
     - name: "cpg_name"
@@ -65,7 +66,7 @@
           X-HP3PAR-WSAPI-SessionKey: "{{ output.json.key }}"
           Accept: "application/json"
         body_format: json
-        body: "{ 'name': '{{ vol_name }}','cpg': '{{ cpg_name }}','sizeMiB': {{ size_GiB|int * 1024 }} }"  
+        body: "{ 'name': '{{ vol_name }}','cpg': '{{ cpg_name }}','sizeMiB': {{ size_GiB|int * 1024 }} }"
         status_code: 201
         return_content: yes
         validate_certs: no
@@ -74,4 +75,3 @@
     - name: Parsing Volumes GET
       debug:
         msg: "{{ volume_output }}"
-

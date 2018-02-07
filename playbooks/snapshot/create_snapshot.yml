@@ -3,6 +3,7 @@
   hosts: localhost
   become: no
   environment:
+    #comment out no_proxy if not behind proxy
     no_proxy: localhost, 10.10.1.150, 10.10.1.151
 
   vars:
@@ -37,12 +38,12 @@
     - name: "read_only"
       prompt: "true/false"
       private: no
-      default: "false"  
+      default: "false"
 
     - name: "snap_comment"
       prompt: "Comment"
       private: no
-      default: ""  
+      default: ""
 
   tasks:
     - name: check if 3par WSAPI is running
@@ -80,4 +81,3 @@
     - name: Parsing Snapshot status
       debug:
         msg: "{{ snapshot_output }}"
-

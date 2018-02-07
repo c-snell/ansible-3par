@@ -3,6 +3,7 @@
   hosts: localhost
   become: no
   environment:
+    #comment out no_proxy if not behind proxy
     no_proxy: localhost, 10.10.1.150, 10.10.1.151
 
   vars:
@@ -31,7 +32,6 @@
     - name: "new_size_GiB"
       prompt: "Enter volume size in GB"
       private: no
-
 
   tasks:
     - name: check if 3par WSAPI is running

@@ -3,6 +3,7 @@
   hosts: localhost
   become: no
   environment:
+    #comment out no_proxy if not behind proxy
     no_proxy: localhost, 10.10.1.150, 10.10.1.151
 
   vars:
@@ -38,7 +39,6 @@
       prompt: "Enter LUN ID"
       private: no
       default: "34"
-
 
   tasks:
     - name: check if 3par WSAPI is running

@@ -3,6 +3,7 @@
   hosts: localhost
   become: no
   environment:
+    #comment out no_proxy if not behind proxy
     no_proxy: localhost, 10.10.1.150, 10.10.1.151
 
   vars:
@@ -25,7 +26,7 @@
       default: "10.10.1.150"
 
     - name: "vol_name"
-      prompt: "Enter volume name to remove:"  
+      prompt: "Enter volume name to remove:"
       private: no
 
 
@@ -63,4 +64,3 @@
     - name: Delete Volume Status
       debug:
         msg: "{{ volume_output }}"
-

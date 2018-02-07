@@ -3,6 +3,7 @@
   hosts: localhost
   become: no
   environment:
+    #comment out no_proxy if not behind proxy
     no_proxy: localhost, 10.10.1.150, 10.10.1.151
 
   vars:
@@ -32,8 +33,6 @@
       prompt: "Enter iSCSI IQNs in quotes (separate multiple entries with comma)"
       private: no
       default: '"iqn.1998-01.com.vmware:virt-cs240-n1-64ed2fd3d9451b9a"'
-
-
 
   tasks:
     - name: check if 3par WSAPI is running

@@ -1,8 +1,9 @@
 ---
-- name: Add or remove 3PAR virtual volume Snap CPG 
+- name: Add or remove 3PAR virtual volume Snap CPG
   hosts: localhost
   become: no
   environment:
+    #comment out no_proxy if not behind proxy
     no_proxy: localhost, 10.10.1.150, 10.10.1.151
 
   vars:
@@ -32,7 +33,6 @@
     - name: "new_snap_cpg"
       prompt: "Enter new Snap/Copy CPG or leave blank to remove existing CPG"
       private: no
-
 
   tasks:
     - name: check if 3par WSAPI is running

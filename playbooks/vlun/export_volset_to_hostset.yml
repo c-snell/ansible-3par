@@ -3,6 +3,7 @@
   hosts: localhost
   become: no
   environment:
+    #comment out no_proxy if not behind proxy
     no_proxy: localhost, 10.10.1.150, 10.10.1.151
 
   vars:
@@ -25,7 +26,7 @@
       default: "10.10.1.150"
 
     - name: "volset_name"
-      prompt: "Enter volumeset to export"  
+      prompt: "Enter volumeset to export"
       private: no
       default: "ansi_vol"
 
@@ -66,7 +67,7 @@
           X-HP3PAR-WSAPI-SessionKey: "{{ output.json.key }}"
           Accept: "application/json"
         body_format: json
-        body: "{ 'volumeName':'set:{{ volset_name }}','hostname':'set:{{ hostset_name }}','lun': {{ lun_id }} }"  
+        body: "{ 'volumeName':'set:{{ volset_name }}','hostname':'set:{{ hostset_name }}','lun': {{ lun_id }} }"
         status_code: 201
         return_content: yes
         validate_certs: no
@@ -75,5 +76,3 @@
     - name: Parsing VLUN Status
       debug:
         msg: "{{ vlun_output }}"
-
-

@@ -3,6 +3,7 @@
   hosts: localhost
   become: no
   environment:
+    #comment out no_proxy if not behind proxy
     no_proxy: localhost, 10.10.1.150, 10.10.1.151
 
   vars:
@@ -63,4 +64,3 @@
     - name: Parsing hostset status
       debug:
         msg: "{{ hostset_output }}"
-
