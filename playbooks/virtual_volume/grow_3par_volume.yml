@@ -7,7 +7,6 @@
 
   vars:
     rest_api_url_3par: "https://{{ ip_address_3par }}:8080/api/v1"
-    payload: '{"action":3, "size_MiB":{{ new_size_GiB|int * 1024 }} }'
 
   vars_prompt:
     - name: "auth_3par_user"
@@ -48,13 +47,12 @@
         validate_certs: no
       register: output
 
-#    - name: Parsing key
-#      debug:
-#        msg: "{{ output.json.key }}"
+    - name: Parsing key
+      debug:
+        msg: "{{ output.json.key }}"
 
     - name: Increase size of 3par volume
       uri:
-#        url: "{{ rest_api_url_3par }}/volumes/{{ vol_name }}, {{ payload }}"
         url: "{{ rest_api_url_3par }}/volumes/{{ vol_name }}"
         method: PUT
         headers:
@@ -71,4 +69,3 @@
     - name: Parsing Volumes GET
       debug:
         msg: "{{ volume_output }}"
-

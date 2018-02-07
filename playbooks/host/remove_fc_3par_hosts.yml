@@ -1,5 +1,5 @@
 ---
-- name: Add FC WWNs to 3PAR host
+- name: Remove FC WWNs from 3PAR host
   hosts: localhost
   become: no
   environment:
@@ -49,11 +49,11 @@
         validate_certs: no
       register: output
 
-#    - name: Parsing key
-#      debug:
-#        msg: "{{ output.json.key }}"
+    - name: Parsing key
+      debug:
+        msg: "{{ output.json.key }}"
 
-    - name: Add FC WWNs to 3PAR host
+    - name: Remove FC WWNs from 3PAR host
       uri:
         url: "{{ rest_api_url_3par }}/hosts/{{ host_name }}"
         method: PUT
@@ -71,4 +71,3 @@
     - name: Modify Host Status
       debug:
         msg: "{{ host_output }}"
-

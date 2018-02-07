@@ -1,5 +1,5 @@
 ---
-- name: Delete 3par VolumeSet
+- name: Delete 3par VV Set
   hosts: localhost
   become: no
   environment:
@@ -25,7 +25,7 @@
       default: "10.10.1.150"
 
     - name: "volumeset_name"
-      prompt: "Enter volumeset name to remove:"
+      prompt: "Enter VolumeSet name to remove:"
       private: no
       default: "newVolumeSet"
 
@@ -47,7 +47,7 @@
       debug:
         msg: "{{ output.json.key }}"
 
-    - name: Delete 3par VolumeSet
+    - name: Delete 3par VV Set
       uri:
         url: "{{ rest_api_url_3par }}/volumesets/{{ volumeset_name }}"
         method: DELETE
@@ -58,9 +58,8 @@
         status_code: 200
         return_content: yes
         validate_certs: no
-      register: volumeset_output
+      register: vvset_output
 
     - name: Parsing volumeset status
       debug:
-        msg: "{{ volumeset_output }}"
-
+        msg: "{{ vvset_output }}"

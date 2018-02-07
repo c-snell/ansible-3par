@@ -1,5 +1,5 @@
 ---
-- name: Create 3par Hostset
+- name: Create 3par VV set
   hosts: localhost
   become: no
   environment:
@@ -25,14 +25,14 @@
       default: "10.10.1.150"
 
     - name: "volumeset_name"
-      prompt: "Enter new volumeset name"
+      prompt: "Enter new VV set name"
       private: no
-      default: "newVolumeSet"
+      default: "newVVset"
 
     - name: "set_members"
-      prompt: "Hosts to add to hostset"
+      prompt: "Volumes to add to VV set"
       private: no
-      default: '"ansi_vol","new_vol_ansible"'  
+      default: '"ansi_vol","new_vol_ansible"'
 
   tasks:
     - name: check if 3par WSAPI is running
@@ -52,7 +52,7 @@
       debug:
         msg: "{{ output.json.key }}"
 
-    - name: Create 3par Hostset
+    - name: Create 3par VV set
       uri:
         url: "{{ rest_api_url_3par }}/volumesets/"
         method: POST
@@ -65,9 +65,8 @@
         status_code: 201
         return_content: yes
         validate_certs: no
-      register: volumeset_output
+      register: vvset_output
 
-    - name: Parsing volumeset status
+    - name: Parsing vvset status
       debug:
-        msg: "{{ volumeset_output }}"
-
+        msg: "{{ vvset_output }}"

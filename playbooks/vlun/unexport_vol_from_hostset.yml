@@ -1,5 +1,5 @@
 ---
-- name: Unexport volume from host
+- name: Unexport volume from hostset
   hosts: localhost
   become: no
   environment:
@@ -25,7 +25,7 @@
       default: "10.10.1.150"
 
     - name: "vol_name"
-      prompt: "Enter volume to unexport"  
+      prompt: "Enter volume to unexport"
       private: no
       default: "ansi_vol"
 
@@ -58,7 +58,7 @@
       debug:
         msg: "{{ output.json.key }}"
 
-    - name: Export volume to host
+    - name: Unexport volume to hostset
       uri:
         url: "{{ rest_api_url_3par }}/vluns/{{ vol_name }},{{ lun_id }},set:{{ hostset_name }}"
         method: DELETE
@@ -74,5 +74,3 @@
     - name: Parsing VLUN Status
       debug:
         msg: "{{ vlun_output }}"
-
-

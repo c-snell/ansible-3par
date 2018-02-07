@@ -1,5 +1,5 @@
 ---
-- name: Delete 3par Volume
+- name: Delete 3par Host
   hosts: localhost
   become: no
   environment:
@@ -25,7 +25,7 @@
       default: "10.10.1.150"
 
     - name: "host_name"
-      prompt: "Enter host to remove:"  
+      prompt: "Enter host to remove:"
       private: no
 
 
@@ -47,7 +47,7 @@
       debug:
         msg: "{{ output.json.key }}"
 
-    - name: Delete 3par volume
+    - name: Delete 3par host
       uri:
         url: "{{ rest_api_url_3par }}/hosts/{{ host_name }}"
         method: DELETE
@@ -63,4 +63,3 @@
     - name: Delete Host Status
       debug:
         msg: "{{ host_output }}"
-

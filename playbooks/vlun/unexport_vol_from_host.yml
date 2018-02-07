@@ -1,5 +1,5 @@
 ---
-- name: Export volume to host
+- name: Unexport volume to host
   hosts: localhost
   become: no
   environment:
@@ -7,8 +7,6 @@
 
   vars:
     rest_api_url_3par: "https://{{ ip_address_3par }}:8080/api/v1"
-#    convert_to_MiB: "{{ (size_GiB*1024)|int|abs }}"
-#    convert_to_MiB: 10240
 
   vars_prompt:
     - name: "auth_3par_user"
@@ -27,7 +25,7 @@
       default: "10.10.1.150"
 
     - name: "vol_name"
-      prompt: "Enter volume to unexport"  
+      prompt: "Enter volume to unexport"
       private: no
       default: "ansi_vol"
 
@@ -60,7 +58,7 @@
       debug:
         msg: "{{ output.json.key }}"
 
-    - name: Export volume to host
+    - name: Unexport volume to host
       uri:
         url: "{{ rest_api_url_3par }}/vluns/{{ vol_name }},{{ lun_id }},{{ host_name }}"
         method: DELETE
@@ -76,5 +74,3 @@
     - name: Parsing VLUN Status
       debug:
         msg: "{{ vlun_output }}"
-
-

@@ -35,9 +35,9 @@
 #      default: ""
 
     - name: "set_members"
-      prompt: "Hosts to add to hostset"
+      prompt: "Hosts to add to hostset (separate multiple entries with comma)"
       private: no
-      default: '"ansi_temp","testhost"'  
+      default: '"ansi_temp","testhost"'
 
   tasks:
     - name: check if 3par WSAPI is running
@@ -75,4 +75,3 @@
     - name: Parsing hostset status
       debug:
         msg: "{{ hostset_output }}"
-

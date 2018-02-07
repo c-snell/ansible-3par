@@ -1,5 +1,5 @@
 ---
-- name: New 3par Host
+- name: New 3par Host - Basic
   hosts: localhost
   become: no
   environment:
@@ -46,7 +46,7 @@
       debug:
         msg: "{{ output.json.key }}"
 
-    - name: Create 3PAR host
+    - name: Create 3PAR host - Basic
       uri:
         url: "{{ rest_api_url_3par }}/hosts"
         method: POST
@@ -59,9 +59,8 @@
         status_code: 201
         return_content: yes
         validate_certs: no
-      register: volume_output
+      register: host_output
 
     - name: Create 3PAR host status
       debug:
-        msg: "{{ volume_output }}"
-
+        msg: "{{ host_output }}"

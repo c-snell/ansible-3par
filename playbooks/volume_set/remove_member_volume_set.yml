@@ -1,5 +1,5 @@
 ---
-- name: Increase size of 3par Volume
+- name: Remove volume from 3par VV set
   hosts: localhost
   become: no
   environment:
@@ -7,7 +7,6 @@
 
   vars:
     rest_api_url_3par: "https://{{ ip_address_3par }}:8080/api/v1"
-    payload: '{"snapCPG": "{{ new_snap_cpg }}" }'
 
   vars_prompt:
     - name: "auth_3par_user"
@@ -25,14 +24,15 @@
       private: no
       default: "10.10.1.150"
 
-    - name: "vol_name"
-      prompt: "Enter volume name"
+    - name: "volumeset_name"
+      prompt: "Enter existing VV set name"
       private: no
+      default: "newVVset"
 
-    - name: "new_snap_cpg"
-      prompt: "Enter new Copy CPG or leave blank to remove existing CPG"
+    - name: "set_members"
+      prompt: "Volume(s) to remove to VV set"
       private: no
-
+      default: '"ansi_vol","new_vol_ansible"'
 
   tasks:
     - name: check if 3par WSAPI is running
@@ -52,24 +52,21 @@
       debug:
         msg: "{{ output.json.key }}"
 
-    - name: Change 3PAR volume snapCPG
+    - name: Remove volume from 3par VV set
       uri:
-#        url: "{{ rest_api_url_3par }}/volumes/{{ vol_name }}, {{ payload }}"
-        url: "{{ rest_api_url_3par }}/volumes/{{ vol_name }}"
+        url: "{{ rest_api_url_3par }}/volumesets/{{ volumeset_name }}"
         method: PUT
         headers:
           Content-Type: "application/json"
           X-HP3PAR-WSAPI-SessionKey: "{{ output.json.key }}"
           Accept: "application/json"
         body_format: json
-#        body: "{'action':3 ,'sizeMiB': {{ new_size_GiB|int * 1024 }} }"
-        body: "{'snapCPG': '{{ new_snap_cpg }}' }" 
-        status_code: 200
+        body: "{ 'action':2, 'setmembers':[{{ set_members }}] }"
+        status_code: 201
         return_content: yes
         validate_certs: no
-      register: volume_output
+      register: vvset_output
 
-    - name: Parsing Volumes GET
+    - name: Parsing vvset status
       debug:
-        msg: "{{ volume_output }}"
-
+        msg: "{{ vvset_output }}"

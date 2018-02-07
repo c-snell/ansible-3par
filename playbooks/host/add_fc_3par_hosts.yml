@@ -50,9 +50,9 @@
         validate_certs: no
       register: output
 
-#    - name: Parsing key
-#      debug:
-#        msg: "{{ output.json.key }}"
+    - name: Parsing key
+      debug:
+        msg: "{{ output.json.key }}"
 
     - name: Add FC WWNs to 3PAR host
       uri:
@@ -72,4 +72,3 @@
     - name: Modify Host Status
       debug:
         msg: "{{ host_output }}"
-

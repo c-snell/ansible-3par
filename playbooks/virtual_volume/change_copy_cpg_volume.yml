@@ -1,5 +1,5 @@
 ---
-- name: Add or remove 3PAR virtual volume Copy CPG 
+- name: Add or remove 3PAR virtual volume Copy CPG
   hosts: localhost
   become: no
   environment:
@@ -29,7 +29,7 @@
       private: no
 
     - name: "new_copy_cpg"
-      prompt: "Enter new Copy CPG or leave blank to remove existing Copy CPG"
+      prompt: "Enter new Copy CPG or leave blank to remove existing CPG"
       private: no
 
 
@@ -60,7 +60,7 @@
           X-HP3PAR-WSAPI-SessionKey: "{{ output.json.key }}"
           Accept: "application/json"
         body_format: json
-        body: "{'snapCPG': '{{ new_snap_cpg }}' }" 
+        body: "{'snapCPG': '{{ new_snap_cpg }}' }"
         status_code: 200
         return_content: yes
         validate_certs: no
@@ -69,4 +69,3 @@
     - name: Parsing Volumes GET
       debug:
         msg: "{{ volume_output }}"
-

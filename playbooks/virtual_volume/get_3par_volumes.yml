@@ -1,5 +1,5 @@
 ---
-- name: Connect to 3par
+- name: Connect to 3par and list volumes
   hosts: localhost
   become: no
   environment:
@@ -15,7 +15,6 @@
     - name: check if 3par WSAPI is running
       uri:
         url: "{{ rest_api_url_3par }}/credentials"
-#        force_basic_auth: yes
         method: POST
         headers:
           Content-Type: "application/json"
@@ -29,14 +28,6 @@
     - name: Parsing key
       debug:
         msg: "{{ output.json.key }}"
-
-
-#    - name: test sessionkey with curl
-#      command: "curl -k -H 'X-HP3PAR-WSAPI-SessionKey: {{ output.json.key }}' {{ rest_api_url_3par }}/volumes" 
-#      command: "curl -k {{ rest_api_url_3par }}/volumes" 
-#      register: curl_volumes
-
-
 
     - name: GET 3par volumes
       uri:
@@ -52,5 +43,5 @@
       register: volume_output
 
     - name: Parsing Volumes GET
-      debug: 
+      debug:
         msg: "{{ volume_output }}"

@@ -1,5 +1,5 @@
 ---
-- name: New 3par Host - iSCSI
+- name: Add or remove 3PAR virtual volume Snap CPG 
   hosts: localhost
   become: no
   environment:
@@ -7,6 +7,7 @@
 
   vars:
     rest_api_url_3par: "https://{{ ip_address_3par }}:8080/api/v1"
+    payload: '{"snapCPG": "{{ new_snap_cpg }}" }'
 
   vars_prompt:
     - name: "auth_3par_user"
@@ -24,20 +25,13 @@
       private: no
       default: "10.10.1.150"
 
-    - name: "new_host_name"
-      prompt: "Specify new 3PAR host"
+    - name: "vol_name"
+      prompt: "Enter volume name"
       private: no
 
-    - name: "host_persona"
-      prompt: "Specify host persona"
+    - name: "new_snap_cpg"
+      prompt: "Enter new Snap/Copy CPG or leave blank to remove existing CPG"
       private: no
-      default: "11"
-
-    - name: "iscsi_names"
-      prompt: "Enter iSCSI IQNs (separate multiple entries with comma)"
-      private: no
-      default: '"iqn.1998-01.com.vmware:virt-cs240-n1-64ed2fd3d9451b9a", "iqn.1998-01.com.vmware:virt-esx01-7d347bc2"'
-
 
 
   tasks:
@@ -58,21 +52,21 @@
       debug:
         msg: "{{ output.json.key }}"
 
-    - name: Create 3PAR host - iSCSI
+    - name: Change 3PAR volume snapCPG
       uri:
-        url: "{{ rest_api_url_3par }}/hosts"
-        method: POST
+        url: "{{ rest_api_url_3par }}/volumes/{{ vol_name }}"
+        method: PUT
         headers:
           Content-Type: "application/json"
           X-HP3PAR-WSAPI-SessionKey: "{{ output.json.key }}"
           Accept: "application/json"
         body_format: json
-        body: "{ 'name': '{{ new_host_name }}','persona': {{ host_persona }},'iSCSINames':[ {{ iscsi_names }} ]}"
-        status_code: 201
+        body: "{'snapCPG': '{{ new_snap_cpg }}' }"
+        status_code: 200
         return_content: yes
         validate_certs: no
-      register: host_output
+      register: volume_output
 
-    - name: Create 3PAR host status
+    - name: Parsing Volumes GET
       debug:
-        msg: "{{ host_output }}"
+        msg: "{{ volume_output }}"

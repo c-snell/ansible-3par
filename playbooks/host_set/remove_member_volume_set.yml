@@ -1,5 +1,5 @@
 ---
-- name: New 3par Host - iSCSI
+- name: Remove host from 3par host set
   hosts: localhost
   become: no
   environment:
@@ -24,21 +24,15 @@
       private: no
       default: "10.10.1.150"
 
-    - name: "new_host_name"
-      prompt: "Specify new 3PAR host"
+    - name: "hostset_name"
+      prompt: "Enter existing Host set name"
       private: no
+      default: "newHostset"
 
-    - name: "host_persona"
-      prompt: "Specify host persona"
+    - name: "set_members"
+      prompt: "Host(s) to remove from Host set (separate multiple entries with comma)"
       private: no
-      default: "11"
-
-    - name: "iscsi_names"
-      prompt: "Enter iSCSI IQNs (separate multiple entries with comma)"
-      private: no
-      default: '"iqn.1998-01.com.vmware:virt-cs240-n1-64ed2fd3d9451b9a", "iqn.1998-01.com.vmware:virt-esx01-7d347bc2"'
-
-
+      default: '"ansi_temp","testhost"'
 
   tasks:
     - name: check if 3par WSAPI is running
@@ -58,21 +52,21 @@
       debug:
         msg: "{{ output.json.key }}"
 
-    - name: Create 3PAR host - iSCSI
+    - name: Remove host from 3par host set
       uri:
-        url: "{{ rest_api_url_3par }}/hosts"
-        method: POST
+        url: "{{ rest_api_url_3par }}/hostsets/{{ hostset_name }}"
+        method: PUT
         headers:
           Content-Type: "application/json"
           X-HP3PAR-WSAPI-SessionKey: "{{ output.json.key }}"
           Accept: "application/json"
         body_format: json
-        body: "{ 'name': '{{ new_host_name }}','persona': {{ host_persona }},'iSCSINames':[ {{ iscsi_names }} ]}"
+        body: "{ 'action':2, 'setmembers':[{{ set_members }}] }"
         status_code: 201
         return_content: yes
         validate_certs: no
-      register: host_output
+      register: hostset_output
 
-    - name: Create 3PAR host status
+    - name: Parsing hostset status
       debug:
-        msg: "{{ host_output }}"
+        msg: "{{ hostset_output }}"

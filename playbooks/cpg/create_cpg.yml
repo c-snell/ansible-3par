@@ -8,6 +8,15 @@
   vars:
     rest_api_url_3par: "https://{{ ip_address_3par }}:8080/api/v1"
 
+    #   OPTIONS for LDLayout -
+    #  'cpg_raid_type': 1     - RAID 0         'cpg_HA_type': 1    - PORT: Support failure of a port.
+    #  'cpg_raid_type': 2     - RAID 1         'cpg_HA_type': 2    - CAGE: Support failure of a drive cage.
+    #  'cpg_raid_type': 3     - RAID 5         'cpg_HA_type': 3    - MAG: Support failure of a drive magazine.
+    #  'cpg_raid_type': 4     - RAID 6
+
+    cpg_raid_type: 4
+    cpg_HA_type: 3
+
   vars_prompt:
     - name: "auth_3par_user"
       prompt: "Enter 3par admin user"
@@ -62,7 +71,7 @@
           X-HP3PAR-WSAPI-SessionKey: "{{ output.json.key }}"
           Accept: "application/json"
         body_format: json
-        body: "{ 'name': '{{ cpg_name }}','LDLayout': {'RAIDType': 4,'HA': 3},'growthIncrementMiB': {{ size_GiB|int * 1024 }} }"
+        body: "{ 'name': '{{ cpg_name }}','LDLayout': {'RAIDType': {{ cpg_raid_type }},'HA': {{ cpg_HA_type }}},'growthIncrementMiB': {{ size_GiB|int * 1024 }} }"
         status_code: 201
         return_content: yes
         validate_certs: no
@@ -71,4 +80,3 @@
     - name: Parsing CPG status
       debug:
         msg: "{{ volume_output }}"
-

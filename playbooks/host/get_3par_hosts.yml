@@ -1,5 +1,5 @@
 ---
-- name: Connect to 3par
+- name: Connect to 3par - get hosts
   hosts: localhost
   become: no
   environment:
@@ -30,15 +30,7 @@
       debug:
         msg: "{{ output.json.key }}"
 
-
-#    - name: test sessionkey with curl
-#      command: "curl -k -H 'X-HP3PAR-WSAPI-SessionKey: {{ output.json.key }}' {{ rest_api_url_3par }}/volumes" 
-#      command: "curl -k {{ rest_api_url_3par }}/volumes" 
-#      register: curl_volumes
-
-
-
-    - name: GET 3par hosts
+    - name: GET 3par hosts - get hosts
       uri:
         url: "{{ rest_api_url_3par }}/hosts"
         method: GET
@@ -49,8 +41,8 @@
         status_code: 200
         return_content: yes
         validate_certs: no
-      register: volume_output
+      register: host_output
 
-    - name: Parsing Volumes GET
-      debug: 
-        msg: "{{ volume_output }}"
+    - name: Parsing Host GET
+      debug:
+        msg: "{{ host_output }}"
