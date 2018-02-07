@@ -1,17 +1,17 @@
 # Ansible-3par
 
-Ansible-3par is a starter kit which provides simple Ansible playbooks and examples, which can be used to write custom playbooks to manage your HPE 3PAR storage arrays. These playbooks use Ansible ```uri``` module to communicate via RESTful calls to the HPE 3PAR WSAPI hosted on the 3PAR storage arrays.
+Ansible-3par is a starter kit which provides simple Ansible playbooks and examples that can be used to write custom playbooks to manage your HPE 3PAR storage arrays. These playbooks use Ansible ```uri``` module to communicate via RESTful calls to the HPE 3PAR WSAPI hosted on the 3PAR storage arrays.
 
 ## Requirements
  - Ansible >= 2.1
  - Python >= 2.7.9
  - HPE 3PAR WSAPI enabled
- 
+
 ## Playbooks
 Each playbook corresponds to a storage provisioning operation and talks natively with the HPE 3PAR WSAPI using RESTful calls.
 
 ## Variables
-Each playbook contains variables that can be static `var` or dynamically `var_prompt` configured. Currently the playbooks take the IP, username and password at runtime but depending on your use case, this can be modified easily by adding variables under the corresponding variable sections. 
+Each playbook contains variables that can be static `var` or dynamically `var_prompt` configured. Currently the playbooks take the IP, username and password at runtime but depending on your use case, this can be modified easily by adding variables under the corresponding variable sections.
 
 >**Note**, *spaces matter in `yaml`!* **Don't use tabs.**
 
@@ -22,11 +22,11 @@ Look for the vars and vars_prompt.
 ```yml
 #Define static variables here
 vars:  #
-    rest_api_url_3par: "https://{{ ip_address_3par }}:8080/api/v1" 
+    rest_api_url_3par: "https://{{ ip_address_3par }}:8080/api/v1"
 #   auth_3par_user: "3paruser"
 #   ip_address_3par: "192.168.1.150"
 
-#Run-time variables defined here - Note the 
+#Run-time variables defined here - Note the
 vars_prompt:
     - name: "auth_3par_user"            #variable name
       prompt: "Enter 3par admin user"   #prompt text
@@ -55,8 +55,8 @@ vars_prompt:
     - name: "size_GiB"
       prompt: "Enter Size in GiB"
       private: no
- 
- 
+
+
  ```
 
 ### Example how to create a 3PAR Volume using the [/playbooks/create_3par_volume.yml](playbooks/virtual_volume/create_3par_volume.yml) playbook
