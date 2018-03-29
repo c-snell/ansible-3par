@@ -76,3 +76,11 @@
     - name: Parsing hostset status
       debug:
         msg: "{{ hostset_output }}"
+
+    - name: release authentication key
+      uri:
+        url: "{{ rest_api_url_3par }}/credentials/{{ output.json.key }}"
+        method: DELETE
+        headers:
+          Content-Type: "application/json"
+        validate_certs: no
