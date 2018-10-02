@@ -2,6 +2,8 @@
 
 Ansible-3par is a starter kit which provides simple Ansible playbooks and examples that can be used to write custom playbooks to manage your HPE 3PAR storage arrays. These playbooks use Ansible ```uri``` module to communicate via RESTful calls to the HPE 3PAR WSAPI hosted on the 3PAR storage arrays.
 
+Check out the official HPE 3PAR Storage modules for Ansible found here: https://github.com/HewlettPackard/hpe3par_ansible_module
+
 ## Requirements
  - Ansible >= 2.1
  - Python >= 2.7.9
